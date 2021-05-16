@@ -2,36 +2,28 @@ import React, { useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Link from './Link';
+import { useDispatch, useSelector } from "react-redux";
+import { sagaActions } from "../app/sagaAction";
+import { FEED_SEARCH_QUERY } from '../app/saga'
 
-const FEED_SEARCH_QUERY = gql`
-  query FeedSearchQuery($filter: String!) {
-    feed(filter: $filter) {
-      id
-      links {
-        id
-        url
-        description
-        postedBy {
-          id
-          name
-        }
-        votes {
-          id
-          user {
-            id
-          }
-        }
-        createdAt
-      }
-    }
-  }
-`;
 
 const Search = () => {
+
   const [searchFilter, setSearchFilter] = useState('');
-  const [executeSearch, { data }] = useLazyQuery(
-    FEED_SEARCH_QUERY
-  );
+
+  const dispatch = useDispatch();
+
+  let pizda = () => {
+    dispatch()
+  }
+  // const [executeSearch, { links }] = useLazyQuery(
+  //   useDispatch({ type: sagaActions.FETCH_DATA_SAGA })
+  // );
+
+  const links = useSelector(state => state.links);
+
+  console.log('zalupa',links, dispatch);
+
   return (
     <>
       <div>
@@ -42,16 +34,14 @@ const Search = () => {
         />
         <button
           onClick={() =>
-            executeSearch({
-              variables: { filter: searchFilter }
-            })
-          }
+             pizda()
+            }
         >
           OK
         </button>
       </div>
-      {data &&
-        data.feed.links.map((link, index) => (
+      {links && links.feed &&
+        links.feed.todos.map((link, index) => (
           <Link key={link.id} link={link} index={index} />
         ))}
     </>

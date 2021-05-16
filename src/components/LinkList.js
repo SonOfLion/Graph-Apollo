@@ -85,10 +85,12 @@ const getLinksToRender = (isNewPage, data) => {
   if (isNewPage) {
     return data.feed.links;
   }
+
   const rankedLinks = data.feed.links.slice();
   rankedLinks.sort(
     (l1, l2) => l2.votes.length - l1.votes.length
   );
+  
   return rankedLinks;
 };
 
@@ -104,9 +106,11 @@ const LinkList = () => {
   const isNewPage = history.location.pathname.includes(
     'new'
   );
+
   const pageIndexParams = history.location.pathname.split(
     '/'
   );
+
   const page = parseInt(
     pageIndexParams[pageIndexParams.length - 1]
   );

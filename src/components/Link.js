@@ -25,6 +25,7 @@ const VOTE_MUTATION = gql`
 
 const Link = (props) => {
   const { link } = props;
+  console.log(link);
   const authToken = localStorage.getItem(AUTH_TOKEN);
 
   const take = LINKS_PER_PAGE;
@@ -70,6 +71,7 @@ const Link = (props) => {
       });
     }
   });
+  
   return (
     <div className="flex mt2 items-start">
       <div className="flex items-center">

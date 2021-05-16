@@ -14,6 +14,8 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import App from './components/App';
 import { AUTH_TOKEN } from './constants';
 import * as serviceWorker from './serviceWorker';
+import { Provider } from 'react-redux';
+import store from './app/store';
 import './styles/index.css';
 
 const httpLink = createHttpLink({
@@ -49,8 +51,8 @@ const link = split(
     );
   },
   wsLink,
-  authLink.concat(httpLink)
-);
+  authLink.concat(httpLink),
+  );
 
 const client = new ApolloClient({
   link,
@@ -60,7 +62,9 @@ const client = new ApolloClient({
 ReactDOM.render(
   <BrowserRouter>
     <ApolloProvider client={client}>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </ApolloProvider>
   </BrowserRouter>,
   document.getElementById('root')
