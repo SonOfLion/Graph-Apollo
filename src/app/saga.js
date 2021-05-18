@@ -1,47 +1,26 @@
-import { call, takeEvery, put } from "redux-saga/effects";
-import { fetchData } from "./store";
-import { sagaActions } from "./sagaAction";
-import gql from 'graphql-tag';
+import { takeEvery, put, call } from "redux-saga/effects";
+import { requestLink, requestLinkSuccess, requestLinkFailed } from "./sagaAction";
+import {FEED_SEARCH_QUERY} from "../components/Search";
 
-export const FEED_SEARCH_QUERY = gql`
-  query FeedSearchQuery($filter: String!) {
-    feed(filter: $filter) {
-      id
-      links {
-        id
-        url
-        description
-        createdAt
-        postedBy {
-          id
-          name
-        }
-        votes {
-          id
-          user {
-            id
-          }
-        }
-      }
-    }
-  }
-`;
 
-export function* fetchDataSaga() {
-    console.log('zalupa')
+const delay = (ms, res) =>  new Promise(() => setTimeout(res,ms))
+
+function* fetchDataSaga(action) {
     try {
-        let result = yield call(() =>
-            FEED_SEARCH_QUERY({ url: "http://localhost:4000" })
-        );
-        console.log(result.data)
-        yield put(fetchData(result.data));
-    } catch (e) {
-        console.log(e)
-        yield put({ type: "TODO_FETCH_FAILED" });
+        const [requestLink, { data } ] = action.payload.linksQuery
+
+        const request = requestLink( { variables: { filter: action.payload.searchFilter }})
+
+        console.log(data)
+        yield  call (delay(2000, request).then(( ) => data))
+        yield put({ type: "REQUEST_LINK_SUCCESS", payload: data })
+
+    } catch (error) {
+        console.log(error)
+        yield put(requestLinkFailed())
     }
 }
-console.log(sagaActions)
 
-export default function* rootSaga() {
-    yield takeEvery(sagaActions.FETCH_DATA_SAGA, fetchDataSaga);
+export function* watchFetchLink() {
+    yield takeEvery("REQUEST_LINK", fetchDataSaga)
 }

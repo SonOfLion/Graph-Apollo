@@ -1,38 +1,18 @@
-import {
-    createSlice,
-    configureStore,
-    getDefaultMiddleware
-} from "@reduxjs/toolkit";
-import createSagaMiddleware from "redux-saga";
-import saga from "./saga";
+import { applyMiddleware, createStore, combineReducers, compose  } from "redux";
+import createSagaMiddleware from 'redux-saga';
+import { linksReducer } from './LinksReducer';
+import { watchFetchLink } from './saga';
 
+const sagaMiddleware = createSagaMiddleware();
 
-const linkSlice = createSlice({
-    name: "link",
-    initialState: {
-        links: []
-    },
-    reducers: {
-        fetchData: (state, action) => {
-            return {
-                links: action.payload
-            };
-        }
-    }
-});
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export const { fetchData } = linkSlice.actions;
+const enhancer = composeEnhancers(applyMiddleware(sagaMiddleware));
 
-let sagaMiddleware = createSagaMiddleware();
-const middleware = [...getDefaultMiddleware({ thunk: false }), sagaMiddleware];
+const store = createStore(linksReducer, enhancer);
 
-const store = configureStore({
-    reducer: {
-        links: linkSlice.reducer
-    },
-    middleware
-});
+console.log(store.getState())
 
-sagaMiddleware.run(saga);
+sagaMiddleware.run(watchFetchLink)
 
 export default store;
