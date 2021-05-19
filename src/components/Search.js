@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Link from './Link';
-import {connect,useDispatch} from 'react-redux';
+import { connect,useDispatch } from 'react-redux';
 import * as sagaActions from '../app/sagaAction';
 import {requestLinkSuccess} from "../app/sagaAction";
 
